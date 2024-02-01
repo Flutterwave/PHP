@@ -8,6 +8,7 @@ use Flutterwave\Contract\ConfigInterface;
 use Flutterwave\EventHandlers\TransactionVerificationEventHandler;
 use Flutterwave\Traits\ApiOperations\Post;
 use Psr\Http\Client\ClientExceptionInterface;
+use Flutterwave\Helper\EnvVariables;
 
 class Transactions extends Service
 {
@@ -31,9 +32,9 @@ class Transactions extends Service
     public function __construct(?ConfigInterface $config = null)
     {
         parent::__construct($config);
-        $this->baseUrl = $this->config::BASE_URL;
+        $this->baseUrl = EnvVariables::BASE_URL;
         $this->end_point = Transactions::ENDPOINT;
-        $this->eventHandler = new TransactionVerificationEventHandler();
+        $this->eventHandler = new TransactionVerificationEventHandler($this->config);
     }
 
     /**
