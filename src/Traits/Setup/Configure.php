@@ -12,7 +12,7 @@ trait Configure
 {
     public static function bootstrap(?ConfigInterface $config = null): void
     {
-        if (\is_null($config)) {
+        if (\is_null($config) && \is_null(self::$config)) {
             include __DIR__ . '/../../../setup.php';
 
             if ('composer' === $flutterwave_installation) {
