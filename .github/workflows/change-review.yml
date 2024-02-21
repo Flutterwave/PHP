@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: [7.4, 8.1, 8.2]
+        php: [7.4, 8.1, 8.2, 8.3]
 
     env:
       XDEBUG_MODE: coverage
@@ -48,17 +48,13 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
 
-      - name: 'Create env file'
-        run: |
-          touch .env
-          echo PUBLIC_KEY=${PUBLIC_KEY} >> .env
-          echo SECRET_KEY=${SECRET_KEY} >> .env
-          echo ENCRYPTION_KEY=${ENCRYPTION_KEY} >> .env
-          echo ENV=${ENV} >> .env
-          ls -a ${{ github.workspace }}
-
       - name: run unit tests and coverage scan
         run: ./vendor/bin/pest --coverage --min=20 --coverage-clover ./coverage.xml
+        env:
+          PUBLIC_KEY: ${{ secrets.PUBLIC_KEY }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
+          ENV: ${{ secrets.ENV }}
 
       - name: Upload to Codecov
         uses: codecov/codecov-action@v2

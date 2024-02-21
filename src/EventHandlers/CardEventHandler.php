@@ -95,7 +95,8 @@ class CardEventHandler implements EventHandlerInterface
     {
         $logger = null;
         $data = [];
-        $mode = $response->meta->authorization->mode;
+
+        $mode = $resource['mode'] ?? $response->meta->authorization->mode;
 
         if (property_exists($response, 'data')) {
             $transactionId = $response->data->id;
@@ -124,6 +125,12 @@ class CardEventHandler implements EventHandlerInterface
             $data['instruction'] = $response->data->processor_response;
             $data['validate'] = true;
             break;
+        default:
+            $data['data_to_save']['status'] = $response->data->status; 
+            $data['data_to_save']['amount'] = $response->data->amount; 
+            $data['data_to_save']['currency'] = $response->data->currency; 
+            $data['data_to_save']['customer_name'] = $response->data->customer->name; 
+            $data['data_to_save']['customer_email'] = $response->data->customer->email; 
         }
 
         $data['mode'] = $mode;

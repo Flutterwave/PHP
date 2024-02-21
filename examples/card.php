@@ -4,7 +4,26 @@ session_start();
 
 use Flutterwave\Util\AuthMode;
 use Flutterwave\Util\Currency;
-\Flutterwave\Flutterwave::bootstrap();
+use Flutterwave\Config\ForkConfig;
+use Dotenv\Dotenv;
+// custom config.
+
+if(!file_exists( '.env' )) {
+    $dotenv = Dotenv::createImmutable(__DIR__."/../"); 
+} else {
+    $dotenv = Dotenv::createImmutable(__DIR__."/");
+}
+
+$dotenv->safeLoad();
+
+$config = ForkConfig::setUp(
+    $_ENV['SECRET_KEY'],
+    $_ENV['PUBLIC_KEY'],
+    $_ENV['ENV'],
+    $_ENV['ENCRYPTION_KEY']
+);
+
+\Flutterwave\Flutterwave::bootstrap($config);
 
 try {
 
@@ -48,6 +67,8 @@ try {
     $data['customer'] = $customerObj;
     $payload  = $cardpayment->payload->create($data);
 
+    
+
     if(!empty($_REQUEST))
     {
         $request = $_REQUEST;
@@ -59,7 +80,7 @@ try {
 
         if(isset($request['make'])){
             $result = $cardpayment->initiate($payload);
-
+            dd($cardpayment);
             if($result['mode'] === AuthMode::PIN){
                 $instruction = $result['instruction'];
                 require __DIR__."/view/form/pin.php";

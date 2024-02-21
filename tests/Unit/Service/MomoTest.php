@@ -66,6 +66,8 @@ class MomoTest extends TestCase
         $payload  = $momopayment->payload->create($data);
         $result = $momopayment->initiate($payload);
         $this->assertSame('pending',$result['data_to_save']['status']);
+
+        return $data['tx_ref'];
     }
 
     public function testAuthModeGhanaRedirect(){

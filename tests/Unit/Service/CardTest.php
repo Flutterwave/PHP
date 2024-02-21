@@ -8,6 +8,7 @@ use Flutterwave\Util\AuthMode;
 use PHPUnit\Framework\TestCase;
 use Flutterwave\Util\Currency;
 use Flutterwave\Test\Resources\Setup\Config;
+use Test_Cards;
 
 class CardTest extends TestCase
 {
@@ -32,12 +33,7 @@ class CardTest extends TestCase
                 ],
                 "preauthorize" => false,
                 "payment_plan" => null,
-                "card_details" => [
-                    "card_number" => "5531886652142950",
-                    "cvv" => "564",
-                    "expiry_month" => "09",
-                    "expiry_year" => "32"
-                ]
+                "card_details" => Test_Cards::MSTR_CARD_PIN_TWO
             ],
         ];
 
@@ -47,6 +43,7 @@ class CardTest extends TestCase
             "email" => "ol868gjdfjua@gmail.com",
             "phone" => "+2349067985861"
         ]);
+        
         $data['customer'] = $customerObj;
         $payload  = $cardpayment->payload->create($data);
         $result = $cardpayment->initiate($payload);
@@ -93,12 +90,7 @@ class CardTest extends TestCase
                 ],
                 "preauthorize" => false,
                 "payment_plan" => null,
-                "card_details" => [
-                    "card_number" => "5531886652142950",
-                    "cvv" => "564",
-                    "expiry_month" => "09",
-                    "expiry_year" => "32"
-                ]
+                "card_details" => Test_Cards::MSTR_CARD_PIN_ONE
             ],
         ];
 
@@ -155,8 +147,42 @@ class CardTest extends TestCase
     //     $this->assertSame(AuthMode::AVS, $result['mode']);
     // }
 
+    public function testPreuthCard()
+    {
+        $data = [
+            "amount" => 2000,
+            "currency" => Currency::NGN,
+            "tx_ref" => "TEST-".uniqid().time(),
+            "redirectUrl" => "https://www.example.com",
+            "additionalData" => [
+                "subaccounts" => [
+                    ["id" => "RSA_345983858845935893"]
+                ],
+                "meta" => [
+                    "unique_id" => uniqid().uniqid()
+                ],
+                "preauthorize" => false,
+                "payment_plan" => null,
+                "card_details" => Test_Cards::PREATH
+            ],
+        ];
+
+        $cardpayment = Flutterwave::create("card");
+        $customerObj = $cardpayment->customer->create([
+            "full_name" => "Olaobaju Abraham",
+            "email" => "ol868gjdfjua@gmail.com",
+            "phone" => "+2349062985861"
+        ]);
+        $data['customer'] = $customerObj;
+        $payload  = $cardpayment->payload->create($data);
+        $result = $cardpayment->initiate($payload);
+
+        $this->assertTrue(!empty($result['url']));
+    }
+
     public function testAuthModelReturnNoauth()
     {
         $this->assertTrue(true);
     }
+
 }

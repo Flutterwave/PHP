@@ -19,6 +19,12 @@
     <include>
         <directory suffix=".php">./src</directory>
     </include>
+    <exclude>
+        <directory suffix=".php">./vendor</directory>
+        <directory suffix=".js">./vendor</directory>
+        <directory suffix=".xml">./vendor</directory>
+        <file>tests/bootstrap.php</file>
+    </exclude>
     <report>
         <clover outputFile="coverage.xml" />
     </report>

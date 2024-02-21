@@ -1,6 +1,6 @@
 <?php
 
-namespace Unit\Service;
+namespace Unit\Checkout;
 
 use Eloquent\Liberator\Liberator;
 use Flutterwave\Config\ForkConfig;
@@ -12,6 +12,20 @@ use Flutterwave\Flutterwave;
 use Flutterwave\Library\Modal;
 use Flutterwave\Util\Currency;
 use PHPUnit\Framework\TestCase;
+use DG\BypassFinals;
+
+BypassFinals::enable();
+BypassFinals::setWhitelist(
+    [
+        '*/src/Library/*',
+        // '*/src/Entities/*',
+        // '*/src/Factories/*',
+        // '*/src/HttpAdapter/*',
+        '*/src/Controller/*',
+    ]
+);
+
+
 
 class CheckoutTest extends TestCase 
 {
@@ -77,13 +91,15 @@ class CheckoutTest extends TestCase
         return [
             [
                 Modal::STANDARD,
-                [ "tx_ref" => 'FLW_TEST|' . random_int( 10, 2000) . '|' . uniqid('aMx') ],
+                [ 
+                    "tx_ref" => 'FLW_TEST|' . random_int(10, 2000) . '|' . uniqid('aMx') 
+                ],
                 new ModalEventHandler(),
                 ForkConfig::setUp(
-                    $_ENV['SECRET_KEY'],
-                    $_ENV['PUBLIC_KEY'],
-                    $_ENV['ENCRYPTION_KEY'],
-                    $_ENV['ENV']
+                    $_ENV['SECRET_KEY'] ?? \getenv('SECRET_KEY'),
+                    $_ENV['PUBLIC_KEY'] ?? \getenv('PUBLIC_KEY'),
+                    $_ENV['ENCRYPTION_KEY'] ?? \getenv('ENCRYPTION_KEY'),
+                    $_ENV['ENV'] ?? \getenv('ENV')
                 ),
                 [
                     'amount' => 3000,
@@ -100,10 +116,10 @@ class CheckoutTest extends TestCase
                 [ "tx_ref" => 'FLW_TEST|' . random_int( 10, 2000) . '|' . uniqid('mAx') ],
                 new ModalEventHandler(),
                 ForkConfig::setUp(
-                    $_ENV['SECRET_KEY'],
-                    $_ENV['PUBLIC_KEY'],
-                    $_ENV['ENCRYPTION_KEY'],
-                    $_ENV['ENV']
+                    $_ENV['SECRET_KEY'] ?? \getenv('SECRET_KEY'),
+                    $_ENV['PUBLIC_KEY'] ?? \getenv('PUBLIC_KEY'),
+                    $_ENV['ENCRYPTION_KEY'] ?? \getenv('ENCRYPTION_KEY'),
+                    $_ENV['ENV'] ?? \getenv('ENV')
                 ),
                 [
                     'amount' => 1500,

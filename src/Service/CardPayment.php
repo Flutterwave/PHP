@@ -131,14 +131,20 @@ class CardPayment extends Service implements Payment
      */
     public function handleAuthState(\stdClass $response, $payload): array
     {
-        $mode = $response->meta->authorization->mode;
-        if ($mode === 'pin') {
-            $data = $this->eventHandler->onAuthorization($response, ['logger' => $this->logger]);
-            $data['request_data'] = $payload;
-            return $data;
-        }
+        // dd($response);
+        $data['request_data'] = null;
 
-        return $this->eventHandler->onAuthorization($response, ['logger' => $this->logger]);
+        $mode = (\property_exists($response, 'meta') ) ? 
+        $response->meta->authorization->mode: $response->data->auth_model;
+        if ($mode === 'pin') {
+            $data['request_data'] = $payload;
+        }
+        $extra_data = $this->eventHandler->onAuthorization(
+            $response, 
+            ['logger' => $this->logger, 'mode' => $mode]
+        );
+        
+        return array_merge([ 'request_data' => $data['request_data'] ], $extra_data);
     }
 
     public function getName(): string

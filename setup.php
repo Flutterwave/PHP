@@ -5,7 +5,7 @@ use Dotenv\Dotenv;
 
 $flutterwave_installation = 'composer';
 
-if( !file_exists( '.env' )) {
+if( !file_exists( '.env' ) && !is_dir('vendor')) {
     $dotenv = Dotenv::createImmutable(__DIR__."/../../../"); # on the event that the package is install via composer.
 } else {
     $flutterwave_installation = "manual";
@@ -17,7 +17,12 @@ $dotenv->safeLoad();
 //check if the current version of php is compatible
 if(!Helper\CheckCompatibility::isCompatible())
 {
-    echo "Flutterwave: This SDK only support php version ". Helper\CheckCompatibility::MINIMUM_COMPATIBILITY. " or greater.";
+    if (PHP_SAPI === 'cli') {
+        echo "❌ Flutterwave: This SDK only support php version ". Helper\CheckCompatibility::MINIMUM_COMPATIBILITY. " or greater.";
+    } else {
+        echo "Flutterwave: This SDK only support php version ". Helper\CheckCompatibility::MINIMUM_COMPATIBILITY. " or greater.";
+    }
+    
     exit;
 }
 
@@ -28,22 +33,27 @@ asort($flutterwaveKeys);
 try{
     foreach($flutterwaveKeys as $key)
     {
-        if( empty( $_ENV[ $key ] ) )
+        if(empty($_ENV[ $key ]) && empty(\getenv($key)))
         {
             throw new InvalidArgumentException("$key environment variable missing.");
         }
     }
 }catch(\Exception $e)
 {
-    echo "<code>Flutterwave sdk: " .$e->getMessage()."</code>";
+    if (PHP_SAPI === 'cli') {
+        echo "❌❌Flutterwave sdk: " .$e->getMessage();
+        echo "Kindly create a .env in the project root and add the required environment variables. ❌". PHP_EOL;
+    } else {
+        echo "<code>Flutterwave sdk: " .$e->getMessage()."</code>";
+        echo "<br /> Kindly create a <code>.env </code> in the project root and add the required environment variables.";
+    }
 
-    echo "<br /> Kindly create a <code>.env </code> in the project root and add the required environment variables.";
     exit;
 }
 
 $keys = [
-    'SECRET_KEY' => $_ENV['SECRET_KEY'],
-    'PUBLIC_KEY' => $_ENV['PUBLIC_KEY'],
-    'ENV' => $_ENV['ENV'],
-    'ENCRYPTION_KEY' => $_ENV['ENCRYPTION_KEY']
+    'SECRET_KEY' => $_ENV['SECRET_KEY'] ?? \getenv('SECRET_KEY'),
+    'PUBLIC_KEY' => $_ENV['PUBLIC_KEY'] ?? \getenv('PUBLIC_KEY'),
+    'ENV' => $_ENV['ENV'] ?? \getenv('ENV'),
+    'ENCRYPTION_KEY' => $_ENV['ENCRYPTION_KEY'] ?? \getenv('ENCRYPTION_KEY')
 ];

@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  * ################   #######        ############               ############
@@ -22,19 +23,20 @@
  *
  */
 
-# include vendor directory
+// include vendor directory
 require_once __DIR__ . '/../vendor/autoload.php';
 
-# by pass final definitions.
-DG\BypassFinals::enable();
-DG\BypassFinals::setWhitelist([
-    '*/src/Library/*',
-    '*/src/Entities/*',
-    '*/src/Factories/*',
-    '*/src/HttpAdapter/*',
-    '*/src/Controller/*',
-]);
+// by pass final definitions.
+// DG\BypassFinals::enable();
+// DG\BypassFinals::setWhitelist(
+//     [
+//         '*/src/Library/*',DG\BypassFinals::enable();
+//         // '*/src/Entities/*',
+//         // '*/src/Factories/*',
+//         // '*/src/HttpAdapter/*',
+//         '*/src/Controller/*',
+//     ]
+// );
 
-# flutterwave setup.
-require_once __DIR__ . '/../setup.php';
-
+// Load test cards.
+require_once __DIR__ . '/Resources/Card/test_cards.php';

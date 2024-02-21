@@ -43,7 +43,11 @@ abstract class AbstractConfig
             [
             'base_uri' => EnvVariables::BASE_URL,
             'timeout' => 60,
-            RequestOptions::VERIFY => \Composer\CaBundle\CaBundle::getSystemCaRootBundlePath()
+            'headers' => ['User-Agent' => sprintf(
+                'FlutterwavePHP/%d', EnvVariables::SDK_VERSION
+            )],
+            RequestOptions::VERIFY => 
+            \Composer\CaBundle\CaBundle::getSystemCaRootBundlePath()
             ]
         );
 
