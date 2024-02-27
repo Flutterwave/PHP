@@ -1,6 +1,6 @@
 <?php
 
-namespace Flutterwave\Adapter;
+namespace Flutterwave\HttpAdapter;
 
 use Psr\Http\Message\ResponseFactoryInterface;
 
